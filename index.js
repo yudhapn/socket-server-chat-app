@@ -11,26 +11,43 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+io.use((socket, next) => {
+  socket.userId = socket.handshake.auth.userId;
+  socket.name = socket.handshake.auth.name;
+  next();
+});
+
 io.on("connection", (socket) => {
-  socket.on("connect user", function(user) {
-    io.emit("connect user", user)
+  const users = [];
+  for (let socket of io.of("/").sockets) {
+    users.push({
+      userId: socket.userId,
+      name: socket.name
+    });
+  }
+  socket.emit("users", users);
+
+  socket.broadcast.emit("user connected", {
+    userId: socket.userId,
+    name: socket.name
   });
+
+  socket.on("disconnected", () => {
+    socket.broadcast.emit("user disconnected", socket.userId);
+  });
+
+  socket.on("private message", ({ messageText, userIdDest }) => {
+    const socketDest = io.of("/").sockets.find(obj => { return obj.userId == userIdDest })
+    socket.to(socketDest.id).emit("private message", {
+      messageText,
+      from: socket.userId,
+    });
+  });
+
 
   socket.on("on typing", function(typing) {
     io.emit("on typing", typing)
   })
-
-  socket.on("chat message", function(message) {
-    io.emit("chat message", message)
-  })
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
 });
 
 
