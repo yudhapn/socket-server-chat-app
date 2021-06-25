@@ -21,7 +21,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("user connected", socket.name)
   const users = [];
-  for (let socket of io.of("/").sockets) {
+  for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userId: socket.userId,
       name: socket.name
