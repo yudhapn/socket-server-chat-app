@@ -14,11 +14,12 @@ app.get("/", (req, res) => {
 io.use((socket, next) => {
   socket.userId = socket.handshake.auth.userId;
   socket.name = socket.handshake.auth.name;
+  console.log(`userId: ${socket.userId} name: ${socket.name}`)
   next();
 });
 
 io.on("connection", (socket) => {
-  console.log("user connected", socket.userId)
+  console.log("user connected", socket.name)
   const users = [];
   for (let socket of io.of("/").sockets) {
     users.push({
