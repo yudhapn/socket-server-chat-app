@@ -40,7 +40,7 @@
         }
     });
 
-    socket.on('private message', function(messageText) {
+    socket.on('private message', function({messageText}) {
         var item = document.createElement('li');
         item.textContent = `${messageText}`;
         messages.appendChild(item);
