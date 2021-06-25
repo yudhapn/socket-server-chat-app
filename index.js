@@ -39,10 +39,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("private message", ({ messageText, userIdDest }) => {
-    const socketDest = io.of("/").sockets.find(obj => { return obj.userId == userIdDest })
+    // const socketDest = io.of("/").sockets.find(obj => { return obj.userId == userIdDest })
     socket.to(socketDest.id).emit("private message", {
       messageText,
-      from: socket.userId,
+      // from: socket.userId,
     });
   });
 
