@@ -27,6 +27,7 @@ io.on("connection", (socket) => {
       name: socket.name
     });
   }
+  console.log("users", users)
   socket.emit("users", users);
 
   socket.broadcast.emit("user connected", {
