@@ -18,6 +18,7 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
+  console.log("user connected")
   const users = [];
   for (let socket of io.of("/").sockets) {
     users.push({
@@ -33,6 +34,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnected", () => {
+    console.log("user disconnected")
     socket.broadcast.emit("user disconnected", socket.userId);
   });
 
